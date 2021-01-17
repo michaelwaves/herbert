@@ -1,0 +1,40 @@
+
+//defining pins
+#define echoPin 2 
+#define triggerPin 3 
+#define servoPin 5 
+
+#include <Servo.h> //servo library 
+Servo servo; //servo object created
+long duration; // variable for the duration of sound wave travel
+int distance; // variable for the distance 
+
+void setup() {
+  pinMode(triggerPin, OUTPUT); // Sets the triggerPin as an OUTPUT
+  pinMode(echoPin, INPUT); // Sets the echoPin as an INPUT
+  Serial.begin(9600); 
+  servo.attach(servoPin);
+}
+void loop() {
+  //sets trigger
+  digitalWrite(triggerPin, LOW);
+  delayMicroseconds(5);
+  digitalWrite(triggerPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(triggerPin, LOW);
+  // Reads the echoPin and calculates distance
+  duration = pulseIn(echoPin, HIGH);
+  distance = duration * 0.034 / 2; // Speed of sound over 2
+  // Displays the distance on the Serial Monitor
+  Serial.print("Distance: ");
+  Serial.print(distance);
+  Serial.println(" cm");
+//if the sensor distance is less than the maximum range of hrc sensor
+  if (distance < 100) {
+    digitalWrite(servoPin, HIGH);
+    servo.write(80);
+    delay(1000);
+  }
+  servo.write(0); //returns servo to original state
+  delay(1000);
+}
